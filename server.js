@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -9,8 +10,26 @@ const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+const HISTORY_FILE = path.join(__dirname, 'history.json');
 const users = new Map();
-const dialogs = new Map();
+let dialogs = {}; // Теперь это объект, а не Map
+
+// Загрузка истории из файла при старте
+if (fs.existsSync(HISTORY_FILE)) {
+  try {
+    dialogs = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'));
+    console.log('История загружена');
+  } catch (e) {
+    console.error('Ошибка чтения истории', e);
+  }
+}
+
+const saveHistory = () => {
+  fs.writeFile(HISTORY_FILE, JSON.stringify(dialogs), (err) => {
+    if (err) console.error('Ошибка сохранения истории', err);
+  });
+};
+
 const dialogKey = (a, b) => [a, b].sort().join('|');
 
 io.on('connection', (socket) => {
@@ -33,10 +52,12 @@ io.on('connection', (socket) => {
     text = (text || '').trim();
     if (!text) return;
 
-    const msg = { from: currentNick, to, text, ts: Date.now() };
+    const msg = { from: currentNick, to, text, ts: Date.now(), id: Date.now() + Math.random() };
     const key = dialogKey(currentNick, to);
-    if (!dialogs.has(key)) dialogs.set(key, []);
-    dialogs.get(key).push(msg);
+    
+    if (!dialogs[key]) dialogs[key] = [];
+    dialogs[key].push(msg);
+    saveHistory(); // Сохраняем на диск
 
     io.to('user:' + to).emit('message', msg);
     socket.emit('message', msg);
@@ -44,7 +65,7 @@ io.on('connection', (socket) => {
 
   socket.on('history', (withNick, cb) => {
     if (!currentNick) return cb([]);
-    cb(dialogs.get(dialogKey(currentNick, withNick)) || []);
+    cb(dialogs[dialogKey(currentNick, withNick)] || []);
   });
 
   socket.on('typing', ({ to, isTyping }) => {
