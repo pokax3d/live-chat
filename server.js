@@ -35,7 +35,7 @@ const dialogKey = (a, b) => [a, b].sort().join('|');
 io.on('connection', (socket) => {
   let currentNick = null;
 
-  socket.on('login', (nick, cb) => {
+    socket.on('login', (nick, cb) => {
     nick = (nick || '').trim();
     if (!nick) return cb({ ok: false, error: 'Введи ник' });
     if (users.has(nick)) return cb({ ok: false, error: 'Ник занят' });
@@ -43,8 +43,12 @@ io.on('connection', (socket) => {
     currentNick = nick;
     users.set(nick, { socketId: socket.id });
     socket.join('user:' + nick);
-    io.emit('users', [...users.keys()]);
-    cb({ ok: true });
+    
+    // 1. СНАЧАЛА отправляем ответ клиенту, чтобы он запомнил свой ник (me)
+    cb({ ok: true }); 
+    
+    // 2. И только ПОТОМ рассылаем список онлайн-пользователей
+    io.emit('users', [...users.keys()]); 
   });
 
   socket.on('send', ({ to, text }) => {
