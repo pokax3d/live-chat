@@ -43,7 +43,7 @@ socket.on('users', (list) => {
 function openDialog(user) {
   currentTo = user;
   unreadCounts[user] = 0; // Сбрасываем счетчик
-  document.title = 'LiveChat'; // Сбрасываем заголовок
+  document.title = 'MuyleeGram';// Сбрасываем заголовок
   
   $('chatHeaderText').textContent = 'Чат с ' + user;
   $('msgInput').disabled = false;
