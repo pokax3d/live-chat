@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>LiveChat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="login" class="screen">
+    <div class="login-box">
+      <h1>LiveChat</h1>
+      <p>Введи свой ник, чтобы начать</p>
+      <input id="nick" placeholder="Твой ник" maxlength="20" autofocus>
+      <button id="loginBtn">Войти</button>
+      <p id="loginErr" class="err"></p>
+    </div>
+  </div>
+
+  <div id="app" class="screen hidden">
+    <aside>
+      <div class="me">
+        <div class="avatar" id="myAvatar"></div>
+        <div class="me-info">
+          <div class="me-name" id="me"></div>
+          <div class="me-status">в сети</div>
+        </div>
+      </div>
+      <div class="online-title">Онлайн</div>
+      <ul id="users"></ul>
+    </aside>
+
+    <main>
+      <header id="chatHeader">
+        <div id="chatHeaderText">Выбери собеседника слева</div>
+      </header>
+      <div id="messages"></div>
+      <div id="typing" class="typing"></div>
+      <form id="sendForm">
+        <textarea id="msgInput" placeholder="Написать сообщение..." autocomplete="off" rows="1" disabled></textarea>
+        <button id="sendBtn" disabled title="Отправить">➤</button>
+      </form>
+    </main>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
