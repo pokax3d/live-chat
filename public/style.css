@@ -226,13 +226,79 @@ header {
 }
 
 /* --- Мобильная адаптация --- */
+/* --- Мобильная адаптация (ИСПРАВЛЕННАЯ) --- */
 @media (max-width: 768px) {
-  #app { grid-template-columns: 1fr; }
-  aside { display: flex; width: 100%; }
-  main { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); }
+  /* Используем 100dvh вместо 100vh, чтобы учитывать адресную строку браузера */
+  body, #app, main, aside {
+    height: 100dvh; 
+  }
+
+  #app { 
+    display: flex; 
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  /* По умолчанию показываем только список пользователей */
+  aside { 
+    display: flex; 
+    width: 100%;
+    border-right: none;
+  }
+  
+  /* Чат скрыт */
+  main { 
+    display: none; 
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  /* Когда чат открыт - прячем список, показываем чат */
   #app.chat-open aside { display: none; }
   #app.chat-open main { display: flex; }
-  .back-btn { display: block; }
-  #messages { padding: 16px; }
-  .msg { max-width: 90%; }
+  
+  /* Кнопка назад */
+  .back-btn { 
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 24px; 
+    padding: 0;
+  }
+
+  /* Шапка чата */
+  header { 
+    padding: 12px 16px; 
+    min-height: 60px; 
+  }
+
+  /* Сообщения занимают всё свободное место и скроллятся */
+  #messages { 
+    flex: 1;
+    padding: 16px; 
+    padding-bottom: 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+  }
+
+  .msg { max-width: 85%; }
+
+  /* Поле ввода всегда прижато к низу */
+  #sendForm {
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom)); /* Учет "челки" iPhone */
+    width: 100%;
+  }
+
+  /* ВАЖНО: Шрифт 16px предотвращает автоматический зум экрана на iPhone при клике */
+  #nick, #msgInput, #loginBtn {
+    font-size: 16px !important; 
+  }
+  
+  .login-box {
+    padding: 24px;
+    width: 90%;
+  }
 }

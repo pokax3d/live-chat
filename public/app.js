@@ -244,4 +244,13 @@ socket.on('typing', ({ from, isTyping }) => {
   } else {
     el.classList.remove('visible');
   }
+
+  // Регистрация Service Worker для PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(err => {
+      console.log('Ошибка регистрации SW: ', err);
+    });
+  });
+}
 });

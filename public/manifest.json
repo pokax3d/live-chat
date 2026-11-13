@@ -1,0 +1,17 @@
+{
+  "name": "MuyleeGram",
+  "short_name": "MuyleeGram",
+  "description": "Живой чат для общения",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0e14",
+  "theme_color": "#0b0e14",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
